@@ -17,50 +17,68 @@ text_color = (0, 0, 0)
 box_color1 = (255,255,255)
 box_color2 = (255,255,255)
 box_color3 = (255,255,255)
+box_color4 = (193,205,205)
+box_color5 = (193,205,205)
 
 #kotak input
-input_box_ukuran = pygame.Rect(120,10,100,32)
-input_box_jarak = pygame.Rect(120,50,100,32)
-input_box_fokus = pygame.Rect(120,90,100,32)
+input_box_ukuran = pygame.Rect(130,10,100,32)
+input_box_jarak = pygame.Rect(130,50,100,32)
+input_box_fokus = pygame.Rect(130,90,100,32)
+output_box_jarak_bayangan = pygame.Rect(130,130,100,32)
+output_box_ukuran_bayangan = pygame.Rect(130,170,100,32)
 
-#teks default
-input_text_ukuran = f'{ukuran_benda}'
-input_text_jarak = f'{jarak_benda}'
-input_text_fokus = f'{titik_fokus}'
 
 active1 = False
 active2 = False
 active3 = False
 #END TABLE DATA
 
+#teks default
+input_text_ukuran = f'{ukuran_benda}'
+input_text_jarak = f'{jarak_benda}'
+input_text_fokus = f'{titik_fokus}'
+
+
 def display_text(layer, text, input_box, box_color):
 	pygame.draw.rect(layer, box_color, input_box)
 	text_surface = input_font.render(text, True, (0))
 	layer.blit(text_surface, (input_box.x+5, input_box.y+5))
 
-def jarak_bayang():
-	varDummy = jarak_benda
-	if varDummy-titik_fokus == 0:
-		varDummy -= 0.1
-		s = 1/(1/(titik_fokus) - 1/(varDummy))
-		return s
-	else:
-		s = 1/(1/(titik_fokus) - 1/(jarak_benda))
-		return s
-
-def pembesaran():
-	M = jarak_bayang()/(jarak_benda)
-	return (M)
-
-def tinggi_bayang():
-    tinggi_bayang = pembesaran()*(ukuran_benda)
-    return tinggi_bayang
 
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			quit()
+   
+   
+		def jarak_bayang():
+			varDummy = jarak_benda
+			if varDummy-titik_fokus == 0:
+				varDummy -= 0.1
+				jarak_bayang = 1/(1/(titik_fokus) - 1/(varDummy))
+				return jarak_bayang
+			else:
+				jarak_bayang = 1/(1/(titik_fokus) - 1/(jarak_benda))
+				return jarak_bayang
+
+		def pembesaran():
+			M = jarak_bayang()/(jarak_benda)
+			return (M)
+
+		def tinggi_bayang():
+			tinggi_bayang = pembesaran()*(ukuran_benda)
+			return tinggi_bayang
+
+		nilai_jarak_bayangan = round(jarak_bayang())
+		nilai_ukuran_bayangan = round(tinggi_bayang())
+  
+  
+		output_text_jarak_bayangan = f'{nilai_jarak_bayangan}'
+		output_text_ukuran_bayangan = f'{nilai_ukuran_bayangan}'
+ 
+
+
 			
 		# if event.type == pygame.KEYDOWN:
 		# 	if event.key == pygame.K_BACKSPACE:
@@ -209,9 +227,12 @@ while True:
 	display_text(surface_kanvas, input_text_jarak, input_box_jarak, box_color2)
 	obj_kanvas.buatTeks(surface_kanvas, "Titik Fokus", (10,98))
 	display_text(surface_kanvas, input_text_fokus, input_box_fokus, box_color3)
+	obj_kanvas.buatTeks(surface_kanvas, "Jarak Bayangan", (10, 138))
+	display_text(surface_kanvas, output_text_jarak_bayangan, output_box_jarak_bayangan, box_color4)
+	obj_kanvas.buatTeks(surface_kanvas, "Ukuran Bayangan", (10, 178))
+	display_text(surface_kanvas, output_text_ukuran_bayangan, output_box_ukuran_bayangan, box_color5)
 	# END TABEL DATA
 
 	# OUTPUT DISPLAY
 	screen.blits([(surface_kanvas, (0,0))])
 	pygame.display.flip()
-
