@@ -10,28 +10,6 @@ ukuran_benda = 100
 jarak_benda = 200
 titik_fokus = 50
 
-# START TABLE INPUT DATA 
-pygame.font.init()
-input_font = pygame.font.SysFont('Century', 16)
-text_color = (0, 0, 0)
-box_color1 = (255,255,255)
-box_color2 = (255,255,255)
-box_color3 = (255,255,255)
-
-#kotak input
-input_box_ukuran = pygame.Rect(120,10,100,32)
-input_box_jarak = pygame.Rect(120,50,100,32)
-input_box_fokus = pygame.Rect(120,90,100,32)
-
-#teks default
-input_text_ukuran = f'{ukuran_benda}'
-input_text_jarak = f'{jarak_benda}'
-input_text_fokus = f'{titik_fokus}'
-
-active1 = False
-active2 = False
-active3 = False
-#END TABLE DATA
 
 def display_text(layer, text, input_box, box_color):
 	pygame.draw.rect(layer, box_color, input_box)
@@ -53,26 +31,79 @@ def pembesaran():
 	return (M)
 
 def tinggi_bayang():
-    tinggi_bayang = pembesaran()*(ukuran_benda)
-    return tinggi_bayang
+	tinggi_bayang = pembesaran()*(ukuran_benda)
+	return tinggi_bayang
+
+def dda(x1, y1, x2, y2, line_color):
+	# Hitung selisih x dan y
+	dx = x2 - x1
+	dy = y2 - y1
+
+	# Tentukan jumlah langkah yang diperlukan untuk membuat garis
+	if abs(dx) > abs(dy):
+		steps = abs(dx)
+	else:
+		steps = abs(dy)
+
+	# Hitung perubahan x dan y per langkah
+	x_increment = dx / steps
+	y_increment = dy / steps
+
+	# Inisialisasi koordinat awal
+	x, y = x1, y1
+
+	# Gambar garis dengan algoritma DDA
+	for i in range(steps):
+		pygame.draw.rect(surface_kanvas, line_color, (x, y, 1, 1))
+		x += x_increment
+		y += y_increment
+
+	# Tampilkan hasil gambar
+	pygame.display.update()
+
+# START TABLE INPUT DATA 
+pygame.font.init()
+input_font = pygame.font.SysFont('Century', 16)
+text_color = (0, 0, 0)
+box_color1 = (255,255,255)
+box_color2 = (255,255,255)
+box_color3 = (255,255,255)
+box_color4 = (240,240,240)
+
+#kotak input
+input_box_ukuran = pygame.Rect(130,10,100,32)
+input_box_jarak = pygame.Rect(130,50,100,32)
+input_box_fokus = pygame.Rect(130,90,100,32)
+output_box_ukuran_bayangan = pygame.Rect(130,130,100,32)
+output_box_jarak_bayangan = pygame.Rect(130,170,100,32)
+
+
+#teks default
+input_text_ukuran = f'{ukuran_benda}'
+input_text_jarak = f'{jarak_benda}'
+input_text_fokus = f'{titik_fokus}'
+
+active1 = False
+active2 = False
+active3 = False
+#END TABLE DATA
+
 
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			quit()
-			
-		# if event.type == pygame.KEYDOWN:
-		# 	if event.key == pygame.K_BACKSPACE:
-		# 		# Hapus karakter terakhir dari teks input jika tombol backspace ditekan
-		# 		input_ukuran_benda_text = input_ukuran_benda_text[:-1]
-		# 	elif event.key == pygame.K_RETURN:
-		# 		# Proses teks input jika tombol enter ditekan
-		# 		newUkuranBenda = int(input_ukuran_benda_text)
-		# 		ukuran_benda = newUkuranBenda
-		# 	else:
-		# 		# Tambahkan karakter ke teks input jika tombol lainnya ditekan
-		# 		input_ukuran_benda_text += event.unicode
+
+		nilai_jarak_bayangan = round(jarak_bayang())
+		nilai_ukuran_bayangan = round(tinggi_bayang())
+
+		if input_text_jarak == input_text_fokus:
+			output_text_ukuran_bayangan = f'INFINITY'
+			output_text_jarak_bayangan = f'INFINITY'
+		else:
+			output_text_ukuran_bayangan = f'{nilai_ukuran_bayangan}'
+			output_text_jarak_bayangan = f'{nilai_jarak_bayangan}'
 
 		if event.type == pygame.MOUSEBUTTONDOWN:
 			if input_box_ukuran.collidepoint(event.pos):
@@ -128,6 +159,7 @@ while True:
 					input_text_jarak = f'{jarak_benda-1}'
 					newJarak = int(input_text_jarak)
 					jarak_benda = newJarak	
+					
 				else:
 					input_text_jarak += event.unicode
 
@@ -149,21 +181,24 @@ while True:
 				else:
 					input_text_fokus += event.unicode
 
-	# Kanvas
-	obj_kanvas = canvas.Canvas(1280, 600) #pembuatan objek
+
+# Kanvas
+	obj_kanvas = canvas.Canvas(width, height) #pembuatan objek
 	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, (240,255,255))#pembuatan surface
 
 	
-	#START KARTESIUS
-	kartesius_x = obj_kanvas.buatGaris(surface_kanvas, (0,0,0), (0, obj_kanvas.midPointY), (obj_kanvas.panjangKanvas, obj_kanvas.midPointY))
+#START KARTESIUS
+	# kartesius_x = obj_kanvas.buatGaris(surface_kanvas, (0,0,0), (0, obj_kanvas.midPointY), (obj_kanvas.panjangKanvas, obj_kanvas.midPointY))
+	dda(0, obj_kanvas.midPointY, obj_kanvas.panjangKanvas, obj_kanvas.midPointY, (0,0,0))
 
-	kartesius_y = obj_kanvas.buatGaris(surface_kanvas, (0,0,0), (obj_kanvas.midPointX, 0), (obj_kanvas.midPointX, obj_kanvas.lebarKanvas))
+	# kartesius_y = obj_kanvas.buatGaris(surface_kanvas, (0,0,0), (obj_kanvas.midPointX, 0), (obj_kanvas.midPointX, obj_kanvas.lebarKanvas))
+	dda(obj_kanvas.midPointX, 0, obj_kanvas.midPointX, obj_kanvas.lebarKanvas, (0,0,0))
 	#END KARTESIUS
 
 
-	# START BENDA
-	x1, y1 = obj_kanvas.midPointX-jarak_benda, obj_kanvas.midPointY
-	x2, y2 = obj_kanvas.midPointX-jarak_benda, obj_kanvas.midPointY-ukuran_benda
+# START BENDA
+	x1, y1 = int(obj_kanvas.midPointX-jarak_benda), int(obj_kanvas.midPointY)
+	x2, y2 = int(obj_kanvas.midPointX-jarak_benda), int(obj_kanvas.midPointY-ukuran_benda)
 	
 	r = titik_fokus*2
 	f = r+titik_fokus
@@ -171,47 +206,55 @@ while True:
 	pygame.draw.line(surface_kanvas, (0,255,0), (x1,y1), (x2,y2))
 	# END BENDA
 
-	#titik F
+#titik F
 	obj_kanvas.buatTeks(surface_kanvas, 'f', (obj_kanvas.midPointX-titik_fokus-2, obj_kanvas.midPointY-20)) #teks
 	pygame.draw.circle(surface_kanvas, (0), (obj_kanvas.midPointX - titik_fokus, obj_kanvas.midPointY), 2) #titik
 
-	#titik R
+#titik R
 	obj_kanvas.buatTeks(surface_kanvas, 'r', (obj_kanvas.midPointX-r-2, obj_kanvas.midPointY-20)) #teks
 	pygame.draw.circle(surface_kanvas, (0), (obj_kanvas.midPointX - r, obj_kanvas.midPointY), 2) #titik
 
-	#START BAYANGAN
+#START BAYANGAN
 	pygame.draw.line(surface_kanvas, (0,255,0), ((obj_kanvas.midPointX)-jarak_bayang(), obj_kanvas.midPointY),((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang()))
 	#END BAYANGAN
 
 
-	#START CAHAYA DATANG
+#START CAHAYA DATANG
 	warna_cahaya = (0,0,255)
 	
-	pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, y2)) #1
+	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, y2)) #1
+	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang())) #2
 
-	pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang())) #2
+	dda(-1, y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
+	dda(x2, y2, int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_cahaya)
 	#END CAHAYA DATANG
 
 
-	#START PANTULAN CAHAYA
+#START PANTULAN CAHAYA
 	warna_pantulan = (255,165,0)
 
-	pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, y2), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #1
+	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, y2), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #1
+	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang()), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #2
 
-	pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang()), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #2
+	dda(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+	dda(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), -1, int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 	#END PANTULAN CAHAYA
 
 
-	# START TABEL DATA
+# START TABEL DATA
 	obj_kanvas.buatTeks(surface_kanvas, "Ukuran Benda", (10,18))
 	display_text(surface_kanvas, input_text_ukuran, input_box_ukuran, box_color1)
 	obj_kanvas.buatTeks(surface_kanvas, "Jarak Benda", (10,58))
 	display_text(surface_kanvas, input_text_jarak, input_box_jarak, box_color2)
 	obj_kanvas.buatTeks(surface_kanvas, "Titik Fokus", (10,98))
 	display_text(surface_kanvas, input_text_fokus, input_box_fokus, box_color3)
+	obj_kanvas.buatTeks(surface_kanvas, "Ukuran Bayangan", (10,138))
+	display_text(surface_kanvas, output_text_ukuran_bayangan, output_box_ukuran_bayangan, box_color4)
+	obj_kanvas.buatTeks(surface_kanvas, "Jarak Bayangan", (10,178))
+	display_text(surface_kanvas, output_text_jarak_bayangan, output_box_jarak_bayangan, box_color4)
 	# END TABEL DATA
 
-	# OUTPUT DISPLAY
+# OUTPUT DISPLAY
 	screen.blits([(surface_kanvas, (0,0))])
 	pygame.display.flip()
 
