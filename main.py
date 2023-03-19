@@ -188,11 +188,11 @@ while True:
 
 	
 #START KARTESIUS
-	# kartesius_x = obj_kanvas.buatGaris(surface_kanvas, (0,0,0), (0, obj_kanvas.midPointY), (obj_kanvas.panjangKanvas, obj_kanvas.midPointY))
-	dda(0, obj_kanvas.midPointY, obj_kanvas.panjangKanvas, obj_kanvas.midPointY, (0,0,0))
+	dda(0, obj_kanvas.midPointY, obj_kanvas.panjangKanvas, obj_kanvas.midPointY, (0,0,0)) # kartesius X
+	dda(obj_kanvas.midPointX, 0, obj_kanvas.midPointX, obj_kanvas.lebarKanvas, (0,0,0)) # kartesius Y
 
+	# kartesius_x = obj_kanvas.buatGaris(surface_kanvas, (0,0,0), (0, obj_kanvas.midPointY), (obj_kanvas.panjangKanvas, obj_kanvas.midPointY))
 	# kartesius_y = obj_kanvas.buatGaris(surface_kanvas, (0,0,0), (obj_kanvas.midPointX, 0), (obj_kanvas.midPointX, obj_kanvas.lebarKanvas))
-	dda(obj_kanvas.midPointX, 0, obj_kanvas.midPointX, obj_kanvas.lebarKanvas, (0,0,0))
 	#END KARTESIUS
 
 
@@ -222,22 +222,32 @@ while True:
 #START CAHAYA DATANG
 	warna_cahaya = (0,0,255)
 	
+	if jarak_benda > 0:
+		dda(-1, y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
+		dda(x2, y2, int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_cahaya)
+	else:
+		dda(surface_kanvas.get_width(), y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
+		dda(x2, y2, int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_cahaya)
+
 	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, y2)) #1
 	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang())) #2
 
-	dda(-1, y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
-	dda(x2, y2, int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_cahaya)
 	#END CAHAYA DATANG
 
 
 #START PANTULAN CAHAYA
 	warna_pantulan = (255,165,0)
 
+	if jarak_bayang() > 0:
+		dda(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+		dda(-1, int((obj_kanvas.midPointY)+tinggi_bayang()) ,int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+	else:
+		dda(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+		dda(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), surface_kanvas.get_width(), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan) #2
+
 	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, y2), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #1
 	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang()), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #2
 
-	dda(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
-	dda(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), -1, int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 	#END PANTULAN CAHAYA
 
 
