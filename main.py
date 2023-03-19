@@ -10,7 +10,7 @@ ukuran_benda = 100
 jarak_benda = 200
 titik_fokus = 50
 
-# DATA 
+# START TABLE INPUT DATA 
 pygame.font.init()
 input_font = pygame.font.SysFont('Century', 16)
 text_color = (0, 0, 0)
@@ -31,6 +31,7 @@ input_text_fokus = f'{titik_fokus}'
 active1 = False
 active2 = False
 active3 = False
+#END TABLE DATA
 
 def display_text(layer, text, input_box, box_color):
 	pygame.draw.rect(layer, box_color, input_box)
@@ -101,8 +102,17 @@ while True:
 					newUkuran = int(input_text_ukuran)
 					ukuran_benda = newUkuran
 					box_color1 = (255,255,255)
+				elif event.key == pygame.K_UP:
+					input_text_ukuran = f'{ukuran_benda+1}'
+					newUkuran = int(input_text_ukuran)
+					ukuran_benda = newUkuran
+				elif event.key == pygame.K_DOWN:
+					input_text_ukuran = f'{ukuran_benda-1}'
+					newUkuran = int(input_text_ukuran)
+					ukuran_benda = newUkuran
 				else:
 					input_text_ukuran += event.unicode
+
 			if active2:
 				if event.key == pygame.K_BACKSPACE:
 					input_text_jarak = input_text_jarak[:-1]
@@ -110,8 +120,17 @@ while True:
 					newJarak = int(input_text_jarak)
 					jarak_benda = newJarak
 					box_color2 = (255,255,255)
+				elif event.key == pygame.K_UP:
+					input_text_jarak = f'{jarak_benda+1}'
+					newJarak = int(input_text_jarak)
+					jarak_benda = newJarak
+				elif event.key == pygame.K_DOWN:
+					input_text_jarak = f'{jarak_benda-1}'
+					newJarak = int(input_text_jarak)
+					jarak_benda = newJarak	
 				else:
 					input_text_jarak += event.unicode
+
 			if active3:
 				if event.key == pygame.K_BACKSPACE:
 					input_text_fokus = input_text_fokus[:-1]
@@ -119,6 +138,14 @@ while True:
 					newFokus = int(input_text_fokus)
 					titik_fokus = newFokus
 					box_color3 = (255,255,255)
+				elif event.key == pygame.K_UP:
+					input_text_fokus = f'{titik_fokus+1}'
+					newFokus = int(input_text_fokus)
+					titik_fokus = newFokus
+				elif event.key == pygame.K_DOWN:
+					input_text_fokus = f'{titik_fokus-1}'
+					newFokus = int(input_text_fokus)
+					titik_fokus = newFokus
 				else:
 					input_text_fokus += event.unicode
 
