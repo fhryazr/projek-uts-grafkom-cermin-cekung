@@ -79,16 +79,11 @@ output_box_jarak_bayangan = pygame.Rect(130,170,100,32)
 box_slider = pygame.Rect(0, height-50, width, 50)
 
 
-#teks default
-input_text_ukuran = f'{ukuran_benda}'
-input_text_jarak = f'{jarak_benda}'
-input_text_fokus = f'{titik_fokus}'
 
 active1 = False
 active2 = False
 active3 = False
 #END TABLE DATA
-
 
 while True:
 	obj_kanvas = canvas.Canvas(width, height)
@@ -110,6 +105,7 @@ while True:
 		else:
 			output_text_ukuran_bayangan = f'{nilai_ukuran_bayangan}'
 			output_text_jarak_bayangan = f'{nilai_jarak_bayangan}'
+
 
 		if event.type == pygame.MOUSEBUTTONDOWN:
 			if input_box_ukuran.collidepoint(event.pos):
@@ -277,6 +273,7 @@ while True:
 	display_text(surface_kanvas, input_text_jarak, input_box_jarak, box_color2)
 	obj_kanvas.buatTeks(surface_kanvas, "Titik Fokus", (10,98))
 	display_text(surface_kanvas, input_text_fokus, input_box_fokus, box_color3)
+
 	obj_kanvas.buatTeks(surface_kanvas, "Ukuran Bayangan", (10,138))
 	display_text(surface_kanvas, output_text_ukuran_bayangan, output_box_ukuran_bayangan, box_color4)
 	obj_kanvas.buatTeks(surface_kanvas, "Jarak Bayangan", (10,178))
@@ -292,4 +289,3 @@ while True:
 # OUTPUT DISPLAY
 	screen.blits([(surface_kanvas, (0,0))])
 	pygame.display.flip()
-
