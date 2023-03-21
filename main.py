@@ -4,15 +4,15 @@ import canvas
 
 width, height = 1280, 720
 screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Simulasi cermin Cekung")
 screen.fill((255,255,255))
 
 ukuran_benda = 100
 jarak_benda = 200
 titik_fokus = 50
 
-
 def display_text(layer, text, input_box, box_color):
-	pygame.draw.rect(layer, box_color, input_box)
+	pygame.draw.rect(layer, box_color, input_box, 0, 20)
 	text_surface = input_font.render(text, True, (0))
 	layer.blit(text_surface, (input_box.x+5, input_box.y+5))
 
@@ -76,6 +76,7 @@ input_box_jarak = pygame.Rect(130,50,100,32)
 input_box_fokus = pygame.Rect(130,90,100,32)
 output_box_ukuran_bayangan = pygame.Rect(130,130,100,32)
 output_box_jarak_bayangan = pygame.Rect(130,170,100,32)
+box_slider = pygame.Rect(0, height-50, width, 50)
 
 
 #teks default
@@ -90,6 +91,11 @@ active3 = False
 
 
 while True:
+	obj_kanvas = canvas.Canvas(width, height)
+	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, (240,255,255))
+
+	dragging = False
+	point_pos = (obj_kanvas.midPointX-jarak_benda, height-25)
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -124,6 +130,20 @@ while True:
 			else:
 				active3 = False
 				box_color3 = (255,255,255)
+			if pygame.draw.rect(surface_kanvas, (244, 244, 244), box_slider).collidepoint(event.pos):
+				x, y = event.pos
+				if x >= box_slider.left and x <= box_slider.right:
+					point_pos = (x, box_slider.centery)
+					jarak_benda = obj_kanvas.midPointX-x
+				dragging = True
+		if event.type == pygame.MOUSEBUTTONUP:
+			dragging = False
+		
+		if event.type == pygame.MOUSEMOTION and dragging:
+			x, y = event.pos
+			if x >= box_slider.left and x <= box_slider.right:
+				point_pos = (x, box_slider.centery)
+				jarak_benda = obj_kanvas.midPointX-x
 		
 		if event.type == pygame.KEYDOWN:
 			if active1:
@@ -181,10 +201,9 @@ while True:
 				else:
 					input_text_fokus += event.unicode
 
-
 # Kanvas
-	obj_kanvas = canvas.Canvas(width, height) #pembuatan objek
-	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, (240,255,255))#pembuatan surface
+	#pembuatan objek
+	#pembuatan surface
 
 	
 #START KARTESIUS
@@ -264,6 +283,12 @@ while True:
 	display_text(surface_kanvas, output_text_jarak_bayangan, output_box_jarak_bayangan, box_color4)
 	# END TABEL DATA
 
+	#Slider
+	line_start = (box_slider.left, box_slider.centery)
+	line_end = (box_slider.right, box_slider.centery)
+	pygame.draw.rect(surface_kanvas, (244, 244, 244), box_slider)
+	pygame.draw.line(surface_kanvas, (0,0,0), line_start, line_end, 3)
+	pygame.draw.circle(surface_kanvas, (200,0,0), point_pos, 5)
 # OUTPUT DISPLAY
 	screen.blits([(surface_kanvas, (0,0))])
 	pygame.display.flip()
