@@ -78,7 +78,10 @@ output_box_ukuran_bayangan = pygame.Rect(130,130,100,32)
 output_box_jarak_bayangan = pygame.Rect(130,170,100,32)
 box_slider = pygame.Rect(0, height-50, width, 50)
 
-
+#teks default
+input_text_ukuran = f'{ukuran_benda}'
+input_text_jarak = f'{jarak_benda}'
+input_text_fokus = f'{titik_fokus}'
 
 active1 = False
 active2 = False
