@@ -88,11 +88,13 @@ active2 = False
 active3 = False
 #END TABLE DATA
 
+dragging = False
+
 while True:
 	obj_kanvas = canvas.Canvas(width, height)
 	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, (240,255,255))
 
-	dragging = False
+	
 	point_pos = (obj_kanvas.midPointX-jarak_benda, height-25)
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -134,6 +136,7 @@ while True:
 				if x >= box_slider.left and x <= box_slider.right:
 					point_pos = (x, box_slider.centery)
 					jarak_benda = obj_kanvas.midPointX-x
+					input_text_jarak = f'{jarak_benda}'
 				dragging = True
 		if event.type == pygame.MOUSEBUTTONUP:
 			dragging = False
@@ -143,6 +146,7 @@ while True:
 			if x >= box_slider.left and x <= box_slider.right:
 				point_pos = (x, box_slider.centery)
 				jarak_benda = obj_kanvas.midPointX-x
+				input_text_jarak = f'{jarak_benda}'
 		
 		if event.type == pygame.KEYDOWN:
 			if active1:
