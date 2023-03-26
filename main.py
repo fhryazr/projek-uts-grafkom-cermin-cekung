@@ -8,14 +8,16 @@ screen.fill((255,255,255))
 
 
 ukuran_benda = 200
-jarak_benda = 200
-titik_fokus = 50
+jarak_benda = 0
+titik_fokus = 0
 
 warna_benda = (0, 0, 0)
 warna_surface = (240,255,255)
 warna_garis = (0, 0, 0)
 warna_teks = (0, 0, 0)
 warna_teks2 = (0, 0, 0)
+ 
+image1 = pygame.image.load('./Asset/merah-infinit.png')
 
 def display_text(layer, text, input_box, box_color):
 	pygame.draw.rect(layer, box_color, input_box, 0, 18)
@@ -159,8 +161,8 @@ while True:
 		nilai_ukuran_bayangan = round(tinggi_bayang())
 
 		if input_text_jarak == input_text_fokus:
-			output_text_ukuran_bayangan = f'INFINITY'
-			output_text_jarak_bayangan = f'INFINITY'
+			output_text_ukuran_bayangan = f''
+			output_text_jarak_bayangan = f''
 		else:
 			output_text_ukuran_bayangan = f'{nilai_ukuran_bayangan}'
 			output_text_jarak_bayangan = f'{nilai_jarak_bayangan}'
@@ -300,9 +302,6 @@ while True:
 	r = titik_fokus*2
 	f = r+titik_fokus
 
-	# benda garis
-	# pygame.draw.line(surface_kanvas, (0,255,0), (x1,y1), (x2,y2))
-
 	#benda Pensil
 	pygame.draw.line(surface_kanvas, warna_benda, (x2, y2), (x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)))
 	pygame.draw.line(surface_kanvas, warna_benda,(x2, y2), (x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)))
@@ -399,6 +398,14 @@ while True:
 	obj_kanvas.buatTeks(surface_kanvas, "Jarak Bayangan", (10,178), warna_teks)
 	display_text(surface_kanvas, output_text_jarak_bayangan, output_box_jarak_bayangan, box_color4)
 	# END TABEL DATA
+	pygame.draw.rect(surface_kanvas, box_color4, output_box_jarak_bayangan, 0, 20)
+	pygame.draw.rect(surface_kanvas, box_color4, output_box_ukuran_bayangan, 0, 20)
+	if input_text_jarak == input_text_fokus:
+		image = [surface_kanvas.blit(image1, (150,130)),
+				surface_kanvas.blit(image1, (150,170))]
+	else:
+		display_text(surface_kanvas, output_text_jarak_bayangan, output_box_jarak_bayangan, box_color4)
+		display_text(surface_kanvas, output_text_ukuran_bayangan, output_box_ukuran_bayangan, box_color4)
 
 	#Slider
 	line_start = (box_slider.left, box_slider.centery)
