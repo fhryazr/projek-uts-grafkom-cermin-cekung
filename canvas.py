@@ -16,9 +16,9 @@ class Canvas:
 	def buatGaris(self, surface, color, start_pos, end_pos):
 		pygame.draw.line(surface, color, start_pos, end_pos)
 
-	def buatTeks(self, layer, text, posisi):
+	def buatTeks(self, layer, text, posisi, color):
 		my_font = pygame.font.SysFont("Calibri", 16)
-		teks = my_font.render(text, True, (0,0,0))
+		teks = my_font.render(text, True, color)
 		layer.blit(teks, posisi)
 
 
