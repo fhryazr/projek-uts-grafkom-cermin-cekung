@@ -18,7 +18,7 @@ def display_text(layer, text, input_box, box_color):
 
 def jarak_bayang():
 	varDummy = jarak_benda
-	if varDummy-titik_fokus == 0:
+	if varDummy-titik_fokus == 0 or ZeroDivisionError():
 		varDummy -= 0.1
 		s = 1/(1/(titik_fokus) - 1/(varDummy))
 		return s
@@ -27,8 +27,14 @@ def jarak_bayang():
 		return s
 
 def pembesaran():
-	M = jarak_bayang()/(jarak_benda)
-	return (M)
+	varDummy = jarak_benda
+	if ZeroDivisionError():
+		varDummy += 0.1
+		M = jarak_bayang()/(varDummy)
+		return (M)
+	else:
+		M = jarak_bayang()/(jarak_benda)
+		return (M)
 
 def tinggi_bayang():
 	tinggi_bayang = pembesaran()*(ukuran_benda)
@@ -54,7 +60,8 @@ def dda(x1, y1, x2, y2, line_color):
 
 	# Gambar garis dengan algoritma DDA
 	for i in range(steps):
-		pygame.draw.rect(surface_kanvas, line_color, (x, y, 1, 1))
+		# pygame.draw.rect(surface_kanvas, line_color, (x, y, 1, 1))
+		surface_kanvas.set_at((int(round(x)),int(round(y))), line_color)
 		x += x_increment
 		y += y_increment
 
@@ -68,9 +75,15 @@ def dda_MODIF(x1, y1, x2, y2, line_color):
 
 	# Tentukan jumlah langkah yang diperlukan untuk membuat garis
 	if abs(dx) > abs(dy):
-		steps = abs(dx)
+		if abs(dx) == 0:
+			steps = 1
+		else:
+			steps = abs(dx)
 	else:
-		steps = abs(dy)
+		if abs(dy) == 0:
+			steps = -1
+		else:
+			steps = abs(dy)
 
 	# Hitung perubahan x dan y per langkah
 	x_increment = dx / steps
@@ -83,6 +96,7 @@ def dda_MODIF(x1, y1, x2, y2, line_color):
 	# Gambar garis dengan algoritma DDA
 	for i in range(steps):
 		pygame.draw.rect(surface_kanvas, line_color, (x, y, 1, 1))
+		# surface_kanvas.set_at((int(round(x)),int(round(y))), line_color)
 		x += x_increment
 		y += y_increment
 
@@ -231,6 +245,7 @@ while True:
 	r = titik_fokus*2
 	f = r+titik_fokus
 
+	# benda garis
 	# pygame.draw.line(surface_kanvas, (0,255,0), (x1,y1), (x2,y2))
 
 	#benda Pensil
@@ -268,15 +283,9 @@ while True:
 	if jarak_benda > 0:
 		dda(-1, y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
 		dda_MODIF(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
-		# modif_DDA_atas(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
 	else:
 		dda(surface_kanvas.get_width(), y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
 		dda_MODIF(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
-		# modif_DDA_bawah(obj_kanvas.midPointX - titik_fokus, obj_kanvas.midPointY, x2, y2,  warna_cahaya)
-
-
-	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, y2)) #1
-	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang())) #2
 
 	#END CAHAYA DATANG
 
@@ -287,15 +296,9 @@ while True:
 	if jarak_bayang() > 0:
 		dda(-1, int((obj_kanvas.midPointY)+tinggi_bayang()) ,int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 		dda_MODIF(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
-		# modif_DDA_bawah(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 	else:
 		dda(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), surface_kanvas.get_width(), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 		dda_MODIF(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
-		# modif_DDA_atas(int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), int(obj_kanvas.midPointX), y2, warna_pantulan)
-
-	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, y2), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #1
-	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang()), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #2
-
 	#END PANTULAN CAHAYA
 
 #START BAYANGAN
