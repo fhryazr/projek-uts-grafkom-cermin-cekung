@@ -1,11 +1,10 @@
 import pygame
 import canvas
 
-
 width, height = 1280, 720
 screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Program Simulasi Cermin Cekung | Kelompok 10")
 screen.fill((255,255,255))
-
 
 ukuran_benda = 200
 jarak_benda = 200
@@ -113,7 +112,7 @@ def dda_MODIF(x1, y1, x2, y2, line_color):
 
 # START TABLE INPUT DATA 
 pygame.font.init()
-input_font = pygame.font.SysFont('Century', 16)
+input_font = pygame.font.SysFont('Century',16)
 text_color = (0, 0, 0)
 box_color1 = (255,255,255)
 box_color2 = (255,255,255)
@@ -174,16 +173,32 @@ while True:
 				active1 = True
 			else:
 				active1 = False
-				newUkuran = int(input_text_ukuran)
-				ukuran_benda = newUkuran
+				newUkuran = input_text_ukuran
+				if input_text_ukuran == '':
+					input_text_ukuran = f"{ukuran_benda}"
+					ukuran_benda = int(input_text_ukuran)
+				else:
+					ukuran_benda = int(newUkuran)				
 			if input_box_jarak.collidepoint(event.pos):
 				active2 = True
 			else:
 				active2 = False
+				newJarak = input_text_jarak
+				if input_text_jarak == '':
+					input_text_jarak = f"{jarak_benda}"
+					jarak_benda = int(input_text_jarak)
+				else:
+					jarak_benda = int(newJarak)				
 			if input_box_fokus.collidepoint(event.pos):
 				active3 = True
 			else:
 				active3 = False
+				newFokus = input_text_fokus
+				if input_text_fokus == '':
+					input_text_fokus = f"{titik_fokus}"
+					titik_fokus = int(input_text_fokus)
+				else:
+					titik_fokus = int(newFokus)
 
 			if pygame.draw.rect(surface_kanvas, warna_benda, box_theme, 0, 10).collidepoint(event.pos):
 				if theme:
@@ -248,8 +263,12 @@ while True:
 				if event.key == pygame.K_BACKSPACE:
 					input_text_ukuran = input_text_ukuran[:-1]
 				elif event.key == pygame.K_RETURN:
-					newUkuran = int(input_text_ukuran)
-					ukuran_benda = newUkuran
+					if input_text_ukuran == '':
+						input_text_ukuran = f"{ukuran_benda}"
+						ukuran_benda = int(input_text_ukuran)
+					else:
+						newUkuran = int(input_text_ukuran)
+						ukuran_benda = newUkuran
 					box_color1 = (255,255,255)
 				elif event.key == pygame.K_UP:
 					input_text_ukuran = f'{ukuran_benda+1}'
@@ -266,8 +285,12 @@ while True:
 				if event.key == pygame.K_BACKSPACE:
 					input_text_jarak = input_text_jarak[:-1]
 				elif event.key == pygame.K_RETURN:
-					newJarak = int(input_text_jarak)
-					jarak_benda = newJarak
+					if input_text_jarak == '':
+						input_text_jarak = f"{jarak_benda}"
+						jarak_benda = int(input_text_jarak)
+					else:
+						newJarak = int(input_text_jarak)
+						jarak_benda = newJarak
 					box_color2 = (255,255,255)
 				elif event.key == pygame.K_UP:
 					input_text_jarak = f'{jarak_benda+1}'
@@ -285,8 +308,12 @@ while True:
 				if event.key == pygame.K_BACKSPACE:
 					input_text_fokus = input_text_fokus[:-1]
 				elif event.key == pygame.K_RETURN:
-					newFokus = int(input_text_fokus)
-					titik_fokus = newFokus
+					if input_text_fokus == '':
+						input_text_fokus = f"{titik_fokus}"
+						titik_fokus = int(input_text_fokus)
+					else:
+						newFokus = int(input_text_fokus)
+						titik_fokus = newFokus
 					box_color3 = (255,255,255)
 				elif event.key == pygame.K_UP:
 					input_text_fokus = f'{titik_fokus+1}'
@@ -363,7 +390,7 @@ while True:
 #START KARTESIUS
 	dda(0, obj_kanvas.midPointY, obj_kanvas.panjangKanvas, obj_kanvas.midPointY, warna_garis) # kartesius X
 	dda(obj_kanvas.midPointX, 0, obj_kanvas.midPointX, obj_kanvas.lebarKanvas, warna_garis) # kartesius Y
-#END KARTESIUS
+	#END KARTESIUS
 
 
 # START BENDA
@@ -396,31 +423,32 @@ while True:
 	pygame.draw.line(surface_kanvas, warna_benda,(x2+int(ukuran_benda/12), y1), (x2-int(ukuran_benda/12), y1))
 	# END BENDA
 
+
 #titik F
 	obj_kanvas.buatTeks(surface_kanvas, 'f', (obj_kanvas.midPointX-titik_fokus-2, obj_kanvas.midPointY-20), warna_teks) #teks
-	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX - titik_fokus, obj_kanvas.midPointY), 2) #titik
+	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX - titik_fokus, obj_kanvas.midPointY), 3) #titik
 
 	obj_kanvas.buatTeks(surface_kanvas, 'f', (obj_kanvas.midPointX+titik_fokus-2, obj_kanvas.midPointY-20), warna_teks) #teks
-	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX + titik_fokus, obj_kanvas.midPointY), 2) #titik
+	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX + titik_fokus, obj_kanvas.midPointY), 3) #titik
+
 
 #titik R
 	obj_kanvas.buatTeks(surface_kanvas, 'r', (obj_kanvas.midPointX-r-2, obj_kanvas.midPointY-20), warna_teks) #teks
-	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX - r, obj_kanvas.midPointY), 2) #titik
+	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX - r, obj_kanvas.midPointY), 3) #titik
 
 	obj_kanvas.buatTeks(surface_kanvas, 'r', (obj_kanvas.midPointX + r-2, obj_kanvas.midPointY-20), warna_teks) #teks
-	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX + r, obj_kanvas.midPointY), 2) #titik
+	pygame.draw.circle(surface_kanvas, (255, 0, 0), (obj_kanvas.midPointX + r, obj_kanvas.midPointY), 3) #titik
 
 
 #START CAHAYA DATANG
 	warna_cahaya = (30, 144, 255)
-	
+
 	if jarak_benda > 0:
 		dda(-1, y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
 		dda_MODIF(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
 	else:
 		dda(surface_kanvas.get_width(), y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
 		dda_MODIF(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
-
 	#END CAHAYA DATANG
 
 
@@ -434,6 +462,7 @@ while True:
 		dda(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), surface_kanvas.get_width(), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 		dda_MODIF(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 	#END PANTULAN CAHAYA
+
 
 #START BAYANGAN
 	x1, y1 = int(obj_kanvas.midPointX-jarak_bayang()), int(obj_kanvas.midPointY)
@@ -473,7 +502,8 @@ while True:
 	display_text(surface_kanvas, output_text_jarak_bayangan, output_box_jarak_bayangan, box_color4)
 	# END TABEL DATA
 
-	#Slider
+
+#Slider
 	line_start = (box_slider.left, box_slider.centery)
 	line_end = (box_slider.right, box_slider.centery)
 	pygame.draw.rect(surface_kanvas, (244, 244, 244), box_slider)
@@ -494,7 +524,10 @@ while True:
 	pygame.draw.line(surface_kanvas, (0,0,0), line_start_ukuran, line_end_ukuran, 3)
 	pygame.draw.circle(surface_kanvas, (200,0,0), (box_slider2.centerx, obj_kanvas.midPointY - ukuran_benda), 5)
 
-	#theme box
+	# END SLIDER
+
+
+# THEME BOX
 	pygame.draw.rect(surface_kanvas, warna_benda, box_theme, 0, 10)
 	if theme:
 		warna_benda, warna_garis, warna_teks = (255,255,255), (255,255,255), (255, 255, 255)
@@ -527,8 +560,9 @@ while True:
 			box_color2 = (240, 240, 240)
 		if active3:
 			box_color3 = (240, 240, 240)
+	# END THEME
+
 
 # OUTPUT DISPLAY
 	screen.blits([(surface_kanvas, (0,0))])
 	pygame.display.flip()
-
