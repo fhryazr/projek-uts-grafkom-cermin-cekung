@@ -6,10 +6,12 @@ width, height = 1280, 720
 screen = pygame.display.set_mode((width, height))
 screen.fill((255,255,255))
 
+
 ukuran_benda = 200
 jarak_benda = 200
 titik_fokus = 50
 
+warna_benda = (0,0,0)
 
 def display_text(layer, text, input_box, box_color):
 	pygame.draw.rect(layer, box_color, input_box)
@@ -18,9 +20,11 @@ def display_text(layer, text, input_box, box_color):
 
 def jarak_bayang():
 	varDummy = jarak_benda
-	if varDummy-titik_fokus == 0 or ZeroDivisionError():
-		varDummy -= 0.1
-		s = 1/(1/(titik_fokus) - 1/(varDummy))
+	fokusDummy = titik_fokus
+	if ZeroDivisionError():
+		varDummy -= 0.2
+		fokusDummy -= 0.1
+		s = 1/(1/(fokusDummy) - 1/(varDummy))
 		return s
 	else:
 		s = 1/(1/(titik_fokus) - 1/(jarak_benda))
@@ -118,7 +122,9 @@ input_box_jarak = pygame.Rect(130,50,100,32)
 input_box_fokus = pygame.Rect(130,90,100,32)
 output_box_ukuran_bayangan = pygame.Rect(130,130,100,32)
 output_box_jarak_bayangan = pygame.Rect(130,170,100,32)
-
+box_slider = pygame.Rect(0, height-50, width, 25)
+box_slider2 = pygame.Rect(width-25, 0, 25, height-50)
+box_theme = pygame.Rect(130,10,100,32)
 
 #teks default
 input_text_ukuran = f'{ukuran_benda}'
@@ -128,10 +134,17 @@ input_text_fokus = f'{titik_fokus}'
 active1 = False
 active2 = False
 active3 = False
+dragging_jarak = False
+dragging_fokus = False
+dragging_ukuran = False
 #END TABLE DATA
 
 
 while True:
+	# Kanvas
+	obj_kanvas = canvas.Canvas(width, height) #pembuatan objek
+	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, (240,255,255))#pembuatan surface
+
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -153,6 +166,8 @@ while True:
 				box_color1 = (240,240,240)
 			else:
 				active1 = False
+				newUkuran = int(input_text_ukuran)
+				ukuran_benda = newUkuran
 				box_color1 = (255,255,255)
 			if input_box_jarak.collidepoint(event.pos):
 				active2 = True
@@ -166,7 +181,48 @@ while True:
 			else:
 				active3 = False
 				box_color3 = (255,255,255)
-		
+
+			if pygame.draw.line(surface_kanvas, (0,0,0), (line_start[0], line_start[1]+13), (line_end[0], line_end[1]+13), 3).collidepoint(event.pos):
+				x, y = event.pos
+				if x >= box_slider.left and x <= box_slider.right:
+					jarak_benda = int(obj_kanvas.midPointX-x)
+					input_text_jarak = f'{jarak_benda}'
+				dragging_jarak = True
+
+			if pygame.draw.line(surface_kanvas, (0,0,0), (line_start[0], line_start[1]-13), (line_end[0], line_end[1]-13), 3).collidepoint(event.pos):
+				x, y = event.pos
+				if x >= box_slider.left and x <= box_slider.right:
+					titik_fokus = int(obj_kanvas.midPointX-x)
+					input_text_fokus = f'{titik_fokus}'
+				dragging_fokus = True
+
+			if pygame.draw.line(surface_kanvas, (0,0,0), line_start_ukuran, line_end_ukuran, 3).collidepoint(event.pos):
+				x, y = event.pos
+				if y >= box_slider2.top and y <= box_slider2.bottom-10:
+					ukuran_benda = int(obj_kanvas.midPointY-y)
+					input_text_ukuran = f'{ukuran_benda}'
+				dragging_ukuran = True
+
+		if event.type == pygame.MOUSEBUTTONUP:
+			dragging_fokus, dragging_jarak, dragging_ukuran =False, False, False
+
+		if event.type == pygame.MOUSEMOTION:
+			if dragging_jarak:
+				x, y = event.pos
+				if x >= box_slider.left and x <= box_slider.right:
+					jarak_benda = int(obj_kanvas.midPointX-x)
+					input_text_jarak = f'{jarak_benda}'
+			if dragging_fokus:
+				x, y = event.pos
+				if x >= box_slider.left and x <= box_slider.right:
+					titik_fokus = int(obj_kanvas.midPointX-x)
+					input_text_fokus = f'{titik_fokus}'
+			if dragging_ukuran:
+				x, y = event.pos
+				if y >= box_slider2.top and y <= box_slider2.bottom-10:
+					ukuran_benda = int(obj_kanvas.midPointY-y)
+					input_text_ukuran = f'{ukuran_benda}'
+
 		if event.type == pygame.KEYDOWN:
 			if active1:
 				if event.key == pygame.K_BACKSPACE:
@@ -222,12 +278,6 @@ while True:
 					titik_fokus = newFokus
 				else:
 					input_text_fokus += event.unicode
-
-
-# Kanvas
-	obj_kanvas = canvas.Canvas(width, height) #pembuatan objek
-	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, (240,255,255))#pembuatan surface
-
 	
 #START KARTESIUS
 	dda(0, obj_kanvas.midPointY, obj_kanvas.panjangKanvas, obj_kanvas.midPointY, (0,0,0)) # kartesius X
@@ -249,23 +299,23 @@ while True:
 	# pygame.draw.line(surface_kanvas, (0,255,0), (x1,y1), (x2,y2))
 
 	#benda Pensil
-	pygame.draw.line(surface_kanvas, (0,0,0), (x2, y2), (x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)))
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2, y2), (x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)))
+	pygame.draw.line(surface_kanvas, warna_benda, (x2, y2), (x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2, y2), (x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)))
 
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2+int(ukuran_benda/5), y1-int(ukuran_benda/30)))
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2-int(ukuran_benda/5), y1-int(ukuran_benda/30)))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2+int(ukuran_benda/5), y1-int(ukuran_benda/30)))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2-int(ukuran_benda/5), y1-int(ukuran_benda/30)))
 
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/5), y1-int(ukuran_benda/30)), (x2+int(ukuran_benda/12), y1))
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/5), y1-int(ukuran_benda/30)), (x2-int(ukuran_benda/12), y1))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2+int(ukuran_benda/5), y1-int(ukuran_benda/30)), (x2+int(ukuran_benda/12), y1))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2-int(ukuran_benda/5), y1-int(ukuran_benda/30)), (x2-int(ukuran_benda/12), y1))
 
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)))
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)))
 
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2+int(ukuran_benda/12), y1))
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2-int(ukuran_benda/12), y1))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2+int(ukuran_benda/12), y1))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2-int(ukuran_benda/12), y1))
 	
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)))
-	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/12), y1), (x2-int(ukuran_benda/12), y1))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)))
+	pygame.draw.line(surface_kanvas, warna_benda,(x2+int(ukuran_benda/12), y1), (x2-int(ukuran_benda/12), y1))
 	# END BENDA
 
 #titik F
@@ -340,6 +390,27 @@ while True:
 	obj_kanvas.buatTeks(surface_kanvas, "Jarak Bayangan", (10,178))
 	display_text(surface_kanvas, output_text_jarak_bayangan, output_box_jarak_bayangan, box_color4)
 	# END TABEL DATA
+
+	#Slider
+	line_start = (box_slider.left, box_slider.centery)
+	line_end = (box_slider.right, box_slider.centery)
+	pygame.draw.rect(surface_kanvas, (244, 244, 244), box_slider)
+	pygame.draw.rect(surface_kanvas, (244, 244, 244), box_slider2)
+
+	#Slider jarak
+	pygame.draw.line(surface_kanvas, (0,0,0), (line_start[0], line_start[1]+13), (line_end[0], line_end[1]+13), 3)
+	pygame.draw.circle(surface_kanvas, (200,0,0), (obj_kanvas.midPointX-jarak_benda, box_slider.centery+13), 5)
+
+	#slider fokus
+	pygame.draw.line(surface_kanvas, (0,0,0), (line_start[0], line_start[1]-13), (line_end[0], line_end[1]-13), 3)
+	pygame.draw.circle(surface_kanvas, (200,0,0), (obj_kanvas.midPointX - titik_fokus, box_slider.centery-13), 5)
+
+	#slider ukuran
+	line_start_ukuran = (box_slider2.centerx, box_slider2.top)
+	line_end_ukuran = (box_slider2.centerx, box_slider2.bottom-10)
+	
+	pygame.draw.line(surface_kanvas, (0,0,0), line_start_ukuran, line_end_ukuran, 3)
+	pygame.draw.circle(surface_kanvas, (200,0,0), (box_slider2.centerx, obj_kanvas.midPointY - ukuran_benda), 5)
 
 # OUTPUT DISPLAY
 	screen.blits([(surface_kanvas, (0,0))])
