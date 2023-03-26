@@ -61,6 +61,34 @@ def dda(x1, y1, x2, y2, line_color):
 	# Tampilkan hasil gambar
 	pygame.display.update()
 
+def dda_MODIF(x1, y1, x2, y2, line_color):
+	# Hitung selisih x dan y
+	dx = x2 - x1
+	dy = y2 - y1
+
+	# Tentukan jumlah langkah yang diperlukan untuk membuat garis
+	if abs(dx) > abs(dy):
+		steps = abs(dx)
+	else:
+		steps = abs(dy)
+
+	# Hitung perubahan x dan y per langkah
+	x_increment = dx / steps
+	y_increment = dy / steps
+
+	# Inisialisasi koordinat awal
+	x, y = x1, y1
+	steps += 9999
+
+	# Gambar garis dengan algoritma DDA
+	for i in range(steps):
+		pygame.draw.rect(surface_kanvas, line_color, (x, y, 1, 1))
+		x += x_increment
+		y += y_increment
+
+	# Tampilkan hasil gambar
+	pygame.display.update()
+
 # START TABLE INPUT DATA 
 pygame.font.init()
 input_font = pygame.font.SysFont('Century', 16)
@@ -206,24 +234,23 @@ while True:
 	# pygame.draw.line(surface_kanvas, (0,255,0), (x1,y1), (x2,y2))
 
 	#benda Pensil
-	dda(x2, y2, x2+int(ukuran_benda/5), y2+int(ukuran_benda/5), (0,0,0))
-	dda(x2, y2, x2-int(ukuran_benda/5), y2+int(ukuran_benda/5), (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2, y2), (x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2, y2), (x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)))
 
-	dda(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5), x2+int(ukuran_benda/5), y1-int(ukuran_benda/30), (0,0,0))
-	dda(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5), x2-int(ukuran_benda/5), y1-int(ukuran_benda/30), (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2+int(ukuran_benda/5), y1-int(ukuran_benda/30)))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2-int(ukuran_benda/5), y1-int(ukuran_benda/30)))
 
-	dda(x2+int(ukuran_benda/5), y1-int(ukuran_benda/30), x2+int(ukuran_benda/12), y1, (0,0,0))
-	dda(x2-int(ukuran_benda/5), y1-int(ukuran_benda/30), x2-int(ukuran_benda/12), y1, (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/5), y1-int(ukuran_benda/30)), (x2+int(ukuran_benda/12), y1))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/5), y1-int(ukuran_benda/30)), (x2-int(ukuran_benda/12), y1))
 
-	dda(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5), x2+int(ukuran_benda/12), y2+int(ukuran_benda/4), (0,0,0))
-	dda(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5), x2-int(ukuran_benda/12), y2+int(ukuran_benda/4), (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/5), y2+int(ukuran_benda/5)), (x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)))
 
-	dda(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4), x2+int(ukuran_benda/12), y1, (0,0,0))
-	dda(x2-int(ukuran_benda/12), y2+int(ukuran_benda/4), x2-int(ukuran_benda/12), y1, (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2+int(ukuran_benda/12), y1))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2-int(ukuran_benda/12), y1))
 	
-	dda(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4), x2-int(ukuran_benda/12), y2+int(ukuran_benda/4), (0,0,0))
-	dda(x2+int(ukuran_benda/12), y1, x2-int(ukuran_benda/12), y1, (0,0,0))
-
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/12), y2+int(ukuran_benda/4)), (x2-int(ukuran_benda/12), y2+int(ukuran_benda/4)))
+	pygame.draw.line(surface_kanvas, (0,0,0),(x2+int(ukuran_benda/12), y1), (x2-int(ukuran_benda/12), y1))
 	# END BENDA
 
 #titik F
@@ -240,10 +267,13 @@ while True:
 	
 	if jarak_benda > 0:
 		dda(-1, y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
-		dda(x2, y2, int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_cahaya)
+		dda_MODIF(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
+		# modif_DDA_atas(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
 	else:
 		dda(surface_kanvas.get_width(), y2, int(obj_kanvas.midPointX), y2 , warna_cahaya)
-		dda(x2, y2, int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_cahaya)
+		dda_MODIF(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), x2, y2,  warna_cahaya)
+		# modif_DDA_bawah(obj_kanvas.midPointX - titik_fokus, obj_kanvas.midPointY, x2, y2,  warna_cahaya)
+
 
 	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, y2)) #1
 	# pygame.draw.line(surface_kanvas, warna_cahaya, (x2, y2), (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang())) #2
@@ -255,11 +285,13 @@ while True:
 	warna_pantulan = (255,165,0)
 
 	if jarak_bayang() > 0:
-		dda(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 		dda(-1, int((obj_kanvas.midPointY)+tinggi_bayang()) ,int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+		dda_MODIF(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+		# modif_DDA_bawah(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
 	else:
-		dda(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
-		dda(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), surface_kanvas.get_width(), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan) #2
+		dda(int(obj_kanvas.midPointX), int((obj_kanvas.midPointY)+tinggi_bayang()), surface_kanvas.get_width(), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+		dda_MODIF(int(obj_kanvas.midPointX), y2, int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), warna_pantulan)
+		# modif_DDA_atas(int((obj_kanvas.midPointX)-jarak_bayang()), int((obj_kanvas.midPointY)+tinggi_bayang()), int(obj_kanvas.midPointX), y2, warna_pantulan)
 
 	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, y2), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #1
 	# pygame.draw.line(surface_kanvas, warna_pantulan, (obj_kanvas.midPointX, (obj_kanvas.midPointY)+tinggi_bayang()), ((obj_kanvas.midPointX)-jarak_bayang(), (obj_kanvas.midPointY)+tinggi_bayang())) #2
@@ -273,23 +305,23 @@ while True:
 	pygame.draw.line(surface_kanvas, (0,255,0), (x1,y1),(x2,y2))
 
 	#Bayangan benda Pensil
-	dda(x2, y2, x2+int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5), (0,0,0))
-	dda(x2, y2, x2-int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5), (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2,y2), (x2+int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5)))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2,y2), (x2-int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5)))
 
-	dda(x2+int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5), x2+int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30), (0,0,0))
-	dda(x2-int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5), x2-int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30), (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2+int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5)), (x2+int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30)))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2-int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5)), (x2-int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30)))
 
-	dda(x2+int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30), x2+int(tinggi_bayang()/12), y1, (0,0,0))
-	dda(x2-int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30), x2-int(tinggi_bayang()/12), y1, (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2+int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30)), (x2+int(tinggi_bayang()/12), y1))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2-int(tinggi_bayang()/5), y1+int(tinggi_bayang()/30)), (x2-int(tinggi_bayang()/12), y1))
 
-	dda(x2+int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5), x2+int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4), (0,0,0))
-	dda(x2-int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5), x2-int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4), (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2+int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5)), (x2+int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4)))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2-int(tinggi_bayang()/5), y2-int(tinggi_bayang()/5)), (x2-int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4)))
 
-	dda(x2+int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4), x2+int(tinggi_bayang()/12), y1, (0,0,0))
-	dda(x2-int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4), x2-int(tinggi_bayang()/12), y1, (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2+int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4)), (x2+int(tinggi_bayang()/12), y1))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2-int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4)), (x2-int(tinggi_bayang()/12), y1))
 	
-	dda(x2+int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4), x2-int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4), (0,0,0))
-	dda(x2+int(tinggi_bayang()/12), y1, x2-int(tinggi_bayang()/12), y1, (0,0,0))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2+int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4)),(x2-int(tinggi_bayang()/12), y2-int(tinggi_bayang()/4)))
+	pygame.draw.line(surface_kanvas, (0,0,0), (x2+int(tinggi_bayang()/12), y1), (x2-int(tinggi_bayang()/12), y1))
 	#END BAYANGAN
 
 
