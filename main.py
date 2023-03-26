@@ -138,6 +138,9 @@ input_text_fokus = f'{titik_fokus}'
 active1 = False
 active2 = False
 active3 = False
+active4 = False
+active5 = False
+active6 = False
 dragging_jarak = False
 dragging_fokus = False
 dragging_ukuran = False
@@ -149,6 +152,7 @@ while True:
 	# Kanvas
 	obj_kanvas = canvas.Canvas(width, height) #pembuatan objek
 	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, warna_surface)#pembuatan surface
+	keys = pygame.key.get_pressed()
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -186,31 +190,41 @@ while True:
 					theme = False
 				else:
 					theme = True
-					
-			if pygame.draw.line(surface_kanvas, (0,0,0), (line_start[0], line_start[1]+13), (line_end[0], line_end[1]+13), 3).collidepoint(event.pos):
-				x, y = event.pos
-				if x >= box_slider.left and x <= box_slider.right:
-					jarak_benda = int(obj_kanvas.midPointX-x)
-					input_text_jarak = f'{jarak_benda}'
-				dragging_jarak = True
-
+			# slider fokus
 			if pygame.draw.line(surface_kanvas, (0,0,0), (line_start[0], line_start[1]-13), (line_end[0], line_end[1]-13), 3).collidepoint(event.pos):
 				x, y = event.pos
 				if x >= box_slider.left and x <= box_slider.right:
 					titik_fokus = int(obj_kanvas.midPointX-x)
 					input_text_fokus = f'{titik_fokus}'
 				dragging_fokus = True
-
+				active4 = True
+			else:
+				active4 = False
+			# slider jarak
+			if pygame.draw.line(surface_kanvas, (0,0,0), (line_start[0], line_start[1]+13), (line_end[0], line_end[1]+13), 3).collidepoint(event.pos):
+				x, y = event.pos
+				if x >= box_slider.left and x <= box_slider.right:
+					jarak_benda = int(obj_kanvas.midPointX-x)
+					input_text_jarak = f'{jarak_benda}'
+				dragging_jarak = True
+				active5 = True
+			else:
+				active5 = False
+			
+			
+			# slider ukuran
 			if pygame.draw.line(surface_kanvas, (0,0,0), line_start_ukuran, line_end_ukuran, 3).collidepoint(event.pos):
 				x, y = event.pos
 				if y >= box_slider2.top and y <= box_slider2.bottom-10:
 					ukuran_benda = int(obj_kanvas.midPointY-y)
 					input_text_ukuran = f'{ukuran_benda}'
 				dragging_ukuran = True
+				active6 = True
+			else:
+				active6 = False
 
 		if event.type == pygame.MOUSEBUTTONUP:
 			dragging_fokus, dragging_jarak, dragging_ukuran =False, False, False
-			
 
 		if event.type == pygame.MOUSEMOTION:
 			if dragging_jarak:
@@ -285,7 +299,66 @@ while True:
 				else:
 					input_text_fokus += event.unicode
 
-	
+	if active1:
+		if keys[pygame.K_UP]:
+			input_text_ukuran = f'{ukuran_benda+1}'
+			newUkuran = int(input_text_ukuran)
+			ukuran_benda = newUkuran
+		elif keys[pygame.K_DOWN]:
+			input_text_ukuran = f'{ukuran_benda-1}'
+			newUkuran = int(input_text_ukuran)
+			ukuran_benda = newUkuran
+
+	if active2:
+		if keys[pygame.K_UP]:
+			input_text_jarak = f'{jarak_benda+1}'
+			newJarak = int(input_text_jarak)
+			jarak_benda = newJarak
+		elif keys[pygame.K_DOWN]:
+			input_text_jarak = f'{jarak_benda-1}'
+			newJarak = int(input_text_jarak)
+			jarak_benda = newJarak
+
+	if active3:
+		if keys[pygame.K_UP]:
+			input_text_fokus = f'{titik_fokus+1}'
+			newFokus = int(input_text_fokus)
+			titik_fokus = newFokus
+		elif keys[pygame.K_DOWN]:
+			input_text_fokus = f'{titik_fokus-1}'
+			newFokus = int(input_text_fokus)
+			titik_fokus = newFokus
+
+	if active4:
+		if keys[pygame.K_LEFT]:
+			input_text_fokus = f'{titik_fokus+1}'
+			newFokus = int(input_text_fokus)
+			titik_fokus = newFokus
+		elif keys[pygame.K_RIGHT]:
+			input_text_fokus = f'{titik_fokus-1}'
+			newFokus = int(input_text_fokus)
+			titik_fokus = newFokus
+
+	if active5:
+		if keys[pygame.K_LEFT]:
+			input_text_jarak = f'{jarak_benda+1}'
+			newJarak = int(input_text_jarak)
+			jarak_benda = newJarak
+		elif keys[pygame.K_RIGHT]:
+			input_text_jarak = f'{jarak_benda-1}'
+			newJarak = int(input_text_jarak)
+			jarak_benda = newJarak
+
+	if active6:
+		if keys[pygame.K_UP]:
+			input_text_ukuran = f'{ukuran_benda+1}'
+			newUkuran = int(input_text_ukuran)
+			ukuran_benda = newUkuran
+		elif keys[pygame.K_DOWN]:
+			input_text_ukuran = f'{ukuran_benda-1}'
+			newUkuran = int(input_text_ukuran)
+			ukuran_benda = newUkuran
+
 	
 #START KARTESIUS
 	dda(0, obj_kanvas.midPointY, obj_kanvas.panjangKanvas, obj_kanvas.midPointY, warna_garis) # kartesius X
