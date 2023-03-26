@@ -17,14 +17,19 @@ def display_text(layer, text, input_box, box_color):
 	layer.blit(text_surface, (input_box.x+5, input_box.y+5))
 
 def jarak_bayang():
-	varDummy = jarak_benda
-	if varDummy-titik_fokus == 0:
-		varDummy -= 0.1
-		s = 1/(1/(titik_fokus) - 1/(varDummy))
-		return s
-	else:
-		s = 1/(1/(titik_fokus) - 1/(jarak_benda))
-		return s
+    try:
+        varDummy = jarak_benda
+        if varDummy-titik_fokus == 0:
+            varDummy -= 0.1
+            s = 1/(1/(titik_fokus) - 1/(varDummy))
+            return s
+        else:
+            s = 1/(1/(titik_fokus) - 1/(jarak_benda))
+            return s
+    except ZeroDivisionError:
+        print("Error: Pembagian dengan nol!")
+
+	
 
 def pembesaran():
 	M = jarak_bayang()/(jarak_benda)
@@ -54,9 +59,12 @@ def dda(x1, y1, x2, y2, line_color):
 
 	# Gambar garis dengan algoritma DDA
 	for i in range(steps):
-		pygame.draw.rect(surface_kanvas, line_color, (x, y, 1, 1))
 		x += x_increment
 		y += y_increment
+		if x < 0 or x > surface_kanvas.get_width() or y < 0 or y > surface_kanvas.get_height():
+			break
+		pygame.draw.rect(surface_kanvas, line_color, (x, y, 1, 1))
+
 
 	# Tampilkan hasil gambar
 	pygame.display.update()
@@ -86,6 +94,7 @@ input_text_fokus = f'{titik_fokus}'
 active1 = False
 active2 = False
 active3 = False
+active4 = False
 #END TABLE DATA
 
 dragging = False
@@ -94,9 +103,10 @@ while True:
 	obj_kanvas = canvas.Canvas(width, height)
 	surface_kanvas = obj_kanvas.buatSurface(obj_kanvas, (240,255,255))
 
-	
+	keys = pygame.key.get_pressed()
 	point_pos = (obj_kanvas.midPointX-jarak_benda, height-25)
 	for event in pygame.event.get():
+		
 		if event.type == pygame.QUIT:
 			pygame.quit()
 			quit()
@@ -138,6 +148,9 @@ while True:
 					jarak_benda = obj_kanvas.midPointX-x
 					input_text_jarak = f'{jarak_benda}'
 				dragging = True
+				active4 = True
+			else:
+				active4 = False
 		if event.type == pygame.MOUSEBUTTONUP:
 			dragging = False
 		
@@ -150,64 +163,85 @@ while True:
 		
 		if event.type == pygame.KEYDOWN:
 			if active1:
-				if event.key == pygame.K_BACKSPACE:
-					input_text_ukuran = input_text_ukuran[:-1]
-				elif event.key == pygame.K_RETURN:
+				if event.type == pygame.K_RETURN:
 					newUkuran = int(input_text_ukuran)
 					ukuran_benda = newUkuran
 					box_color1 = (255,255,255)
-				elif event.key == pygame.K_UP:
-					input_text_ukuran = f'{ukuran_benda+1}'
-					newUkuran = int(input_text_ukuran)
-					ukuran_benda = newUkuran
-				elif event.key == pygame.K_DOWN:
-					input_text_ukuran = f'{ukuran_benda-1}'
-					newUkuran = int(input_text_ukuran)
-					ukuran_benda = newUkuran
-				else:
-					input_text_ukuran += event.unicode
-
+				input_text_ukuran += event.unicode
+			
 			if active2:
-				if event.key == pygame.K_BACKSPACE:
-					input_text_jarak = input_text_jarak[:-1]
-				elif event.key == pygame.K_RETURN:
+				if event.type == pygame.K_RETURN:
 					newJarak = int(input_text_jarak)
-					jarak_benda = newJarak
+					newJarak_benda = newJarak
 					box_color2 = (255,255,255)
-				elif event.key == pygame.K_UP:
-					input_text_jarak = f'{jarak_benda+1}'
-					newJarak = int(input_text_jarak)
-					jarak_benda = newJarak
-				elif event.key == pygame.K_DOWN:
-					input_text_jarak = f'{jarak_benda-1}'
-					newJarak = int(input_text_jarak)
-					jarak_benda = newJarak	
-					
-				else:
-					input_text_jarak += event.unicode
-
+				input_text_jarak += event.unicode
+			
 			if active3:
-				if event.key == pygame.K_BACKSPACE:
-					input_text_fokus = input_text_fokus[:-1]
-				elif event.key == pygame.K_RETURN:
-					newFokus = int(input_text_fokus)
-					titik_fokus = newFokus
-					box_color3 = (255,255,255)
-				elif event.key == pygame.K_UP:
-					input_text_fokus = f'{titik_fokus+1}'
-					newFokus = int(input_text_fokus)
-					titik_fokus = newFokus
-				elif event.key == pygame.K_DOWN:
-					input_text_fokus = f'{titik_fokus-1}'
-					newFokus = int(input_text_fokus)
-					titik_fokus = newFokus
-				else:
-					input_text_fokus += event.unicode
+				if event.type == pygame.K_RETURN:
+					newfokus = int(input_text_fokus)
+					newfokus_benda = newfokus
+					box_color2 = (255,255,255)
+				input_text_fokus += event.unicode
+			
+	if active1:
+		if keys[pygame.K_BACKSPACE]:
+			input_text_ukuran = input_text_ukuran[:-1]
+		elif keys[pygame.K_RETURN]:
+			newUkuran = int(input_text_ukuran)
+			ukuran_benda = newUkuran
+			box_color1 = (255,255,255)
+		elif keys[pygame.K_UP]:
+			input_text_ukuran = f'{ukuran_benda+1}'
+			newUkuran = int(input_text_ukuran)
+			ukuran_benda = newUkuran
+		elif keys[pygame.K_DOWN]:
+			input_text_ukuran = f'{ukuran_benda-1}'
+			newUkuran = int(input_text_ukuran)
+			ukuran_benda = newUkuran
+		# else:
+		# 	input_text_ukuran += event.unicode
+
+	if active2:
+		if keys[pygame.K_BACKSPACE]:
+			input_text_jarak = input_text_jarak[:-1]
+		elif keys[pygame.K_RETURN]:
+			newJarak = int(input_text_jarak)
+			jarak_benda = newJarak
+			box_color2 = (255,255,255)
+		elif keys[pygame.K_UP]:
+			input_text_jarak = f'{jarak_benda+1}'
+			newJarak = int(input_text_jarak)
+			jarak_benda = newJarak
+		elif keys[pygame.K_DOWN]:
+			input_text_jarak = f'{jarak_benda-1}'
+			newJarak = int(input_text_jarak)
+			jarak_benda = newJarak	
+			
+		# else:
+		# 	input_text_jarak += event.unicode
+
+	if active3:
+		if keys[pygame.K_BACKSPACE]:
+			input_text_fokus = input_text_fokus[:-1]
+		elif keys[pygame.K_RETURN]:
+			newFokus = int(input_text_fokus)
+			titik_fokus = newFokus
+			box_color3 = (255,255,255)
+		elif keys[pygame.K_UP]:
+			input_text_fokus = f'{titik_fokus+1}'
+			newFokus = int(input_text_fokus)
+			titik_fokus = newFokus
+		elif keys[pygame.K_DOWN]:
+			input_text_fokus = f'{titik_fokus-1}'
+			newFokus = int(input_text_fokus)
+			titik_fokus = newFokus
+		# else:
+		# 	input_text_fokus += event.unicode
 
 # Kanvas
 	#pembuatan objek
 	#pembuatan surface
-
+	
 	
 #START KARTESIUS
 	dda(0, obj_kanvas.midPointY, obj_kanvas.panjangKanvas, obj_kanvas.midPointY, (0,0,0)) # kartesius X
